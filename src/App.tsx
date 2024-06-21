@@ -1,5 +1,6 @@
 import GameOfLife from './Components/GameOfLife';
 import './App.css';
+import GameOfLife from './Components/GameOfLife';
 
 function App() {
   return (
