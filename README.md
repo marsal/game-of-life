@@ -28,6 +28,7 @@ Implementar el "Game of Life" en TypeScript.
 - Escribe pruebas unitarias para verificar el comportamiento.
 - Asegúrate de que el código esté bien documentado y sea fácil de entender.
 - Utiliza comentarios y convenciones de nombres claras para mejorar la legibilidad del código.
+- Implmenta la PIPELINE con Github actions para compilar y deployar el código en Vercel
 
 ## Consideraciones
 
