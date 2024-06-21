@@ -13,3 +13,16 @@ h1 {
 .board {
   border: solid black 1px;
 }
+
+.cel {
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+}
+
+.dead {
+  background-color: white;
+}
+.alive {
+  background-color: green;
+}
