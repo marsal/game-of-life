@@ -17,14 +17,13 @@ const NEIGHBOR_OFFSETS = [
 ];
 
 const GameOfLife: React.FC = () => {
-  const [grid, setGrid] = useState<boolean[][]>([]);
-
   const initializeGrid = () => {
-    const newGrid = Array.from({ length: GRID_HEIGHT }, () =>
+    return Array.from({ length: GRID_HEIGHT }, () =>
       Array.from({ length: GRID_WIDTH }, () => Math.random() > 0.85),
     );
-    setGrid(newGrid);
   };
+
+  const [grid, setGrid] = useState<boolean[][]>(initializeGrid);
 
   const calculateNextGeneration = () => {
     const newGrid = grid.map((row, y) =>
@@ -37,6 +36,7 @@ const GameOfLife: React.FC = () => {
           }
           return count;
         }, 0);
+
         if (cell) {
           return livingNeighbors === 2 || livingNeighbors === 3;
         } else {
@@ -46,10 +46,6 @@ const GameOfLife: React.FC = () => {
     );
     setGrid(newGrid);
   };
-
-  useEffect(() => {
-    initializeGrid();
-  }, []);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
