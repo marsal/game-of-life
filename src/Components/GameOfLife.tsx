@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Cell, { CellState } from './Cell';
 
 // Definimos el tamaño de la cuadrícula
 const GRID_WIDTH = 40;
@@ -19,11 +20,15 @@ const NEIGHBOR_OFFSETS = [
 const GameOfLife: React.FC = () => {
   const initializeGrid = () => {
     return Array.from({ length: GRID_HEIGHT }, () =>
-      Array.from({ length: GRID_WIDTH }, () => Math.random() > 0.85),
+      Array.from({ length: GRID_WIDTH }, () => {
+        const isAlive = Math.random() > 0.85;
+
+        return new Cell(isAlive ? CellState.ALIVE : CellState.DEAD);
+      }),
     );
   };
 
-  const [grid, setGrid] = useState<boolean[][]>(initializeGrid);
+  const [grid, setGrid] = useState<Cell[][]>(initializeGrid);
 
   const calculateNextGeneration = () => {
     const newGrid = grid.map((row, y) =>
@@ -32,16 +37,23 @@ const GameOfLife: React.FC = () => {
           const nx = x + dx;
           const ny = y + dy;
           if (nx >= 0 && nx < GRID_WIDTH && ny >= 0 && ny < GRID_HEIGHT) {
-            return count + (grid[ny][nx] ? 1 : 0);
+            return count + (grid[ny][nx].askIfAlive() ? 1 : 0);
           }
           return count;
         }, 0);
 
-        if (cell) {
-          return livingNeighbors === 2 || livingNeighbors === 3;
-        } else {
-          return livingNeighbors === 3;
+        if (
+          cell.askIfAlive() &&
+          (livingNeighbors === 2 || livingNeighbors === 3)
+        ) {
+          return new Cell(CellState.ALIVE);
         }
+
+        if (!cell.askIfAlive() && livingNeighbors === 3) {
+          return new Cell(CellState.ALIVE);
+        }
+
+        return new Cell(CellState.DEAD);
       }),
     );
     setGrid(newGrid);
