@@ -6,12 +6,20 @@ export enum CellState {
 class Cell {
   constructor(private state: CellState) {}
 
+  static aliveRandomProbability = 0.85;
+
+  static newRandom(): Cell {
+    const isAlive = Math.random() > this.aliveRandomProbability;
+
+    return new Cell(isAlive ? CellState.ALIVE : CellState.DEAD);
+  }
+
   askIfAlive(): boolean {
     return this.state === CellState.ALIVE;
   }
 
-  changeState(newState: CellState): void {
-    this.state = newState;
+  askIfDead(): boolean {
+    return this.state === CellState.DEAD;
   }
 }
 
