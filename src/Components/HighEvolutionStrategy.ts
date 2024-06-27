@@ -1,13 +1,13 @@
 import Cell, { CellState } from './Cell';
 import { IEvolutionStrategy } from './IEvolutionStrategy';
 
-class EvolutionStrategy implements IEvolutionStrategy {
+class HighEvolutionStrategy implements IEvolutionStrategy {
   calculateState(cell: Cell, livingNeighbors: number): CellState {
     if (cell.askIfAlive() && (livingNeighbors === 2 || livingNeighbors === 3)) {
       return CellState.ALIVE;
     }
 
-    if (cell.askIfDead() && livingNeighbors === 3) {
+    if (cell.askIfDead() && (livingNeighbors === 3 || livingNeighbors === 6)) {
       return CellState.ALIVE;
     }
 
@@ -15,4 +15,4 @@ class EvolutionStrategy implements IEvolutionStrategy {
   }
 }
 
-export { EvolutionStrategy };
+export { HighEvolutionStrategy };

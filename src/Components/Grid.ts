@@ -1,4 +1,7 @@
-import Cell, { CellState } from './Cell';
+import Cell from './Cell';
+import { EvolutionStrategy } from './EvolutionStrategy';
+import { HighEvolutionStrategy } from './HighEvolutionStrategy';
+import { IEvolutionStrategy } from './IEvolutionStrategy';
 
 // Definimos las posibles direcciones de los vecinos
 const NEIGHBOR_OFFSETS = [
@@ -15,13 +18,20 @@ const NEIGHBOR_OFFSETS = [
 export class Grid {
   static height = 40;
   static width = 40;
+  private evolutionStrategy: IEvolutionStrategy;
+  constructor(
+    private cells: Cell[][],
+    evolutionStrategy?: IEvolutionStrategy,
+  ) {
+    this.evolutionStrategy = evolutionStrategy ?? new EvolutionStrategy();
+  }
 
-  constructor(private cells: Cell[][]) {}
   static initialize() {
     const cells = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () => Cell.newRandom()),
     );
-    return new Grid(cells);
+
+    return new Grid(cells, new HighEvolutionStrategy());
   }
 
   getCells(): Cell[][] {
@@ -33,20 +43,15 @@ export class Grid {
       row.map((cell, x) => {
         const livingNeighbors = this.getLiveNeighbors(x, y);
 
-        if (
-          cell.askIfAlive() &&
-          (livingNeighbors === 2 || livingNeighbors === 3)
-        ) {
-          return new Cell(CellState.ALIVE);
-        }
+        const newState = this.evolutionStrategy.calculateState(
+          cell,
+          livingNeighbors,
+        );
 
-        if (cell.askIfDead() && livingNeighbors === 3) {
-          return new Cell(CellState.ALIVE);
-        }
-
-        return new Cell(CellState.DEAD);
+        return new Cell(newState);
       }),
     );
+
     this.cells = newGrid;
   }
 
@@ -57,6 +62,7 @@ export class Grid {
       if (nx >= 0 && nx < Grid.height && ny >= 0 && ny < Grid.width) {
         return count + (this.cells[ny][nx].askIfAlive() ? 1 : 0);
       }
+
       return count;
     }, 0);
   }
